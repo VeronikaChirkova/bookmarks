@@ -1,12 +1,11 @@
 Социальный веб-сайт
 Книга Антонио Меле Django-4
 
-
     1) Авторизация (Вход и Выход из аккаунта)
     2) Смена пароля
     3) Восстановление пароля
     4) Регистрация пользователей и профили пользователей
-    Расширение модели пользователя (добавим Profile к User)
+    5) Расширение модели пользователя (добавим Profile к User)
     Подключение системы уведомлений (messages)
     Реализация бэкэнда аутентификации (вход по email)
     Аутентификация через сторонние приложения (соц.сети)
@@ -53,7 +52,6 @@ python manage.py migrate
     ```bash
     python manage.py createsuperuser
     ```
-
 
 Выход:
 
@@ -122,22 +120,30 @@ python manage.py migrate
     5) Давайте добавим ссылку на регистрацию в шаблон входа registration/login.html.
 
 
-Расширение модели пользователя (добавим Profile к User)
+## Расширение модели пользователя (добавим Profile к User)
 
 Когда пользователь регистрируется на сайте, мы создаем пустой профиль, ассоциированный с ним.
 Для ранее зарегистрированных пользователей профиль создастся при переходе по ссылке в профиль в view edit
 
-    Cоздаем модель Profile со связью 1к1 c User
-    Сделать миграции
-    Добавить модель в админку
-    pip install pillow - для поля типа ImageField, чтобы сохранять фотки.
-    Для встроенной модели User нам не нужно добавлять в settings.AUTH_USER_MODEL, эта модель по умолчанию в ней прописана, даже если AUTH_USER_MODEL нет в settings.py , однако если модель кастомная, то необходимо это сделать AUTH_USER_MODEL=myapp.MyUser
-    settings.py -> MEDIA_URL = '/media/',MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-    В URL-шаблоне bookmarks/urls.py добавить if settings.DEBUG: urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT) тк мы сохраняем фото
-    Создать формы UserEditForm и ProfileEditForm
-    Сделать view edit для их отображения.
-    Добавить в view register код для создания профиля пользователя Profile.objects.create(user=new_user) в моделиProfile
-    HTML-шаблон edit.html
+    1) В models.py создаем модель Profile со связью OneToOneField c User
+    2) Установить библиотеку Pillow-для поля типа ImageField, чтобы сохранять фото.
+    ```bash
+    pip install Pillow
+    ```
+    4) В settings.py добавить:
+    MEDIA_URL = 'media/' - это базовый URL-адрес,для раздачи медиафайлов, закачанных пользователями на сайт.
+    MEDIA_ROOT = BASE_DIR / 'media' - это локальный путь, где они находятся.
+    5) Файл urls.py проекта bookmarks добавить if settings.DEBUG: urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT) - чтобы раздавать медиафайлы с по­мощью сервера разработки во время разработки
+    6) Сделать миграции.
+    7) Добавить модель Profile в admin.py
+    8) В account/forms.py cjplfnm ajhvs:
+    UserEditForm - позволит пользователям редактировать свое ФИО,email,которые являются атрибутами встроенной в Django модели User;
+    ProfileEditForm позволит пользователям редактировать данные профиля, сохраненные в конкретно-прикладной модели Profile.
+    9) Сделать view edit для их отображения.
+    10) Добавить в view register код для создания профиля пользователя Profile.objects.create(user=new_user) в модели Profile
+    11) Добавить шаблон URL-адреса в urls.py/account
+    12) HTML-шаблон templates/account/edit.html
+    13) В шаблон информационной панели templates/account/dashboard.html вставим ссылки на страницы редактирования профиля и смены пароля.
 
 ###Подключение системы уведомлений (messages)
 
