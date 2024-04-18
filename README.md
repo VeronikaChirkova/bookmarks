@@ -2,12 +2,9 @@
 Книга Антонио Меле Django-4
 
 
-    1) Аутентификация
-    env
-    Авторизация (Вход и Выход из аккаунта)
-    Переадресация на страницу dashboard
-    Смена пароля
-    Восстановление пароля
+    1) Авторизация (Вход и Выход из аккаунта)
+    2) Смена пароля
+    3) Восстановление пароля
     Регистрация пользователей
     Расширение модели пользователя (добавим Profile к User)
     Подключение системы уведомлений (messages)
@@ -80,35 +77,38 @@ python manage.py migrate
 
     8. Добавить ссылки на страницы входа и выхода в templates/base.html
 
-Смена пароля
+## Смена пароля
 
-Используем вьюхи из коробки.
+Используем встроенные представления
 
-    URL-шаблоны c:
+    1) В urls.py добавить URL-шаблоны
 
     PasswordChangeView - обрабатывает форму смены пароля.
     PasswordChangeDoneView - обработчик, на который будет перенаправлен пользователь после успешной смены пароля. Отображает сообщение о том, что операция выполнена успешно.
 
-    HTML-шаблон templates/registration/password_change_form.html - отображает форму для смены пароля.
-    HTML-шаблон templates/registration/password_change_done.html - содержит простое сообщение, которое говорит об успешной смене пароля.
+    2) HTML-шаблон templates/registration/password_change_form.html - отображает форму для смены пароля.
+    3) HTML-шаблон templates/registration/password_change_done.html - содержит простое сообщение, которое говорит об успешной смене пароля.
 
-Восстановление пароля
+## Восстановление пароля
 
 Используем вьюхи из коробки, подключив smtp-сервер.
 
-    URL-шаблоны c:
+    1) В urls.py добавить URL-шаблоны c:
 
     PasswordResetView - обработчик восстановления пароля. Он генерирует временную ссылку с токеном и отправляет ее на электронную почту пользователя.
     PasswordResetDoneView - отображает страницу с сообщением о том, что ссылка восстановления пароля была отправлена на электронную почту.
-    PasswordResetConfirmView - позволяет пользователю указать новый пароль.
+    PasswordResetConfirmView - проверяет валидность указанного в URL-адресе токена и передает переменную validlink в шаблон.
     PasswordResetCompleteView - отображает сообщение об успешной смене пароля.
 
-    HTML-шаблон templates/registration/password_reset_form.html - отображает форму восстановления пароля. Эта форма отправляет сообщение на email с ссылкой для смены пароля.
-    HTML-шаблон templates/registration/password_reset_email.html - в этом шаблоне формируется сообщение с той самой ссылкой, отправляемое пользователю на email после password_reset_form.html
-    HTML-шаблон templates/registration/password_reset_done.html - содержит сообщение о том, что email ушел по адресу.
-    HTML-шаблон templates/registration/password_reset_confirm.html - если ссылка из password_reset_email.html еще валидна, то отобразит форму восстановления пароля, иначе скажет, что ссылка уже не валидна.
-    HTML-шаблон templates/registration/password_reset_complete.html - содержит сообщение об успешной смене пароля.
-    Настроить smtp-сервер, хотя бы консольный (в нашем случае достаточно заполнить переменную EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'), вьюхи из коробки автоматически отправят email в консоль.
+    2) HTML-шаблон templates/registration/password_reset_form.html - отображает форму восстановления пароля. Эта форма отправляет сообщение на email с ссылкой для смены пароля.
+    3) HTML-шаблон templates/registration/password_reset_email.html - использоваться для отображения отправляемого пользователям электронного письма, чтобы сбросить свой пароль.
+    4) HTML-шаблон templates/registration/password_reset_done.html - содержит сообщение о том, что email ушел по адресу.
+    5) HTML-шаблон templates/registration/password_reset_confirm.html - подтверждаем валидность/невалидность ссылки на сброс пароля. Если ссылка валидна, то отображается форма для сброса пароля пользователя.
+    6) HTML-шаблон templates/registration/password_reset_complete.html - содержит сообщение об успешной смене пароля.
+    7) Настроить smtp-сервер в файл добавить settings.py (email в консоль):
+    ```text
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    ```
 
 Регистрация пользователей
 
