@@ -12,6 +12,7 @@
     9) Создание профиля пользователей, регистрирующихся посредством социальной аутентификации
     10) Создание веб-сайта для управления визуальными закладками
     11) Создание взаимосвязей многие-ко-многим
+    12) Отправка контента с других сайтов
 
 
 Создание и активация виртуального окружения:<br>
@@ -306,3 +307,21 @@ pip install pyOpenSSL
    ```bash
    python manage.py runserver_plus --cert-file cert.crt
    ```
+
+## Отправка контента с других сайтов
+
+1) Создать форму для передачи новых изображений на обработку в images/forms.py<br>
+2) Создатьт класс ImageCreateForm: в images/forms.py<br>
+3) Установить библиоетеку requests:<br>
+   ```bash
+    pip install requests
+   ```
+4) Переопределяем метод save() ImageCreateForm:в images/forms.py, чтобы получать файл изображения по переданному URL-адресу и сохранить его в файловой системе.<br>
+5) В images/views.py добавить представление для хранения изображений на сайте.<br>
+6) В images/urls.py вставить URL-шаблон.<br>
+7) В bookmarks/urls.py встасить:<br>
+   ```text
+   path('images/', include('images.urls', namespace='images')),
+   ```
+8) Создать HTML: templates/images/image/create.html<br>
+9) python manage.py runserver_plus --cert-file cert.crt
