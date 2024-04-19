@@ -13,6 +13,7 @@
     10) Создание веб-сайта для управления визуальными закладками
     11) Создание взаимосвязей многие-ко-многим
     12) Отправка контента с других сайтов
+    13) Разработка букмарклета с по­мощью JavaScript
 
 
 Создание и активация виртуального окружения:<br>
@@ -325,3 +326,11 @@ pip install pyOpenSSL
    ```
 8) Создать HTML: templates/images/image/create.html<br>
 9) python manage.py runserver_plus --cert-file cert.crt
+
+## Разработка букмарклета с по­мощью JavaScript
+
+1) Создать шаблон для запуска букмарклета в images/templates/bookmarklet_launcher.js<br>
+2) Для добавления букмарклета в закладки добавить код в шаблон account/dashboard.html<br>
+3) Создать static/js/bookmarklet.js и static/css/bookmarklet.css<br>
+4) python manage.py runserver_plus --cert-file cert
+.crt~
