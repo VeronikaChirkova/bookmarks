@@ -9,6 +9,9 @@
     6) Подключение системы уведомлений (messages)
     7) Разработка конкретно-прикладного бэкенда аутентификации (вход по email)
     8) Социальная аутентификация через сторонние приложения (Google)
+    9) Создание профиля пользователей, регистрирующихся посредством социальной аутентификации
+    10) Создание веб-сайта для управления визуальными закладками
+    11) Создание взаимосвязей многие-ко-многим
 
 
 Создание и активация виртуального окружения:<br>
@@ -254,3 +257,52 @@ pip install pyOpenSSL
  13) ```bash
         python manage.py runserver_plus --cert-file cert.cr
         ```
+
+## Создание профиля пользователей, регистрирующихся посредством социальной аутентификации
+
+1) В account/authentication.py добавить код.<br>
+        Функция create_profile принимает два необходимых аргумента:<br>
+        • backend: используемый для аутентификации пользователей бэкенд социальной аутентификации. <br>
+        • user: экземпляр класса User нового либо существующего пользователя,прошедшего аутентификацию.<br>
+
+2) В SOCIAL_AUTH_PIPELINE в файле settings.py добавить:<br>
+    ```text
+    SOCIAL_AUTH_PIPELINE = [
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'account.authentication.create_profile',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+    ]
+    ```
+Функция create_profile использует экземпляр класса User, чтобы отыскивать соответствующий объект Profile и создавать новый, если это необходимо.<br>
+
+## Создание веб-сайта для управления визуальными закладками
+
+1) Сщздаем новое приложение:<br>
+   ```bash
+    django-admin startapp images
+   ```
+2) Добавьте приложение в INSTALLED_APPS/settings.py - '`images.apps.ImagesConfig',`<br>
+3) Создать модель в images/models.py и добавить функцию автоматической генерации поля slug<br>
+
+## Создание взаимосвязей многие-ко-многим
+
+   Cоздание модели для хранения изображений:<br>
+
+1) Добавить в модель Image связь ManyToManyField.<br>
+2) Миграции:<br>
+   ```bash
+    python manage.py makemigrations images
+    python manage.py migrate images
+   ```
+3) В images/admin.py зарегистрировать модель Image.<br>
+4) Запуск сервера:
+   ```bash
+   python manage.py runserver_plus --cert-file cert.crt
+   ```
