@@ -1,0 +1,10 @@
+version: '3.10'
+services:
+  devcontainer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bookmarks
+    env_file:
+      - .env
+    restart: no
