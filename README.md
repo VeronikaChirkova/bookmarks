@@ -334,3 +334,40 @@ pip install pyOpenSSL
 3) Создать static/js/bookmarklet.js и static/css/bookmarklet.css<br>
 4) python manage.py runserver_plus --cert-file cert
 .crt~
+
+## Запуск в докере
+
+1. Создайте нового пользователя appuser без домашней директории и добавьте его в группу appuser на локальном ПК.<br>
+```bash
+useradd -M appuser -u 3000 -g 3000 && sudo usermod -L appuser &&sudo usermod -aG appuser appuser
+```
+Это необходимо для обеспечения безопасности, чтобы запуск процессов внутри контейнера осуществлялся от пользователя, который не имеет никаких прав на хостовой машине.<br>
+
+UID (GID) пользователя в контейнере и пользователя за пределами контейнера, у которого есть соответствующие права на доступ к файлу, должны соответствовать.<br>
+
+2. В Dockerfile необходимо прописать: UID (GID), создание пользователя и передачу ему прав, смену пользователя.<br>
+```text
+ARG UNAME=appuser
+ARG UID
+ARG GID
+
+# create user
+RUN groupadd -g ${GID} ${UNAME} &&\
+useradd ${UNAME} -u ${UID} -g ${GID} &&\
+usermod -L ${UNAME} &&\
+usermod -aG ${UNAME} ${UNAME}
+
+# chown all the files to the app user
+RUN chown -R ${UNAME}:${UNAME} /app
+
+USER ${UNAME}
+```
+3. Команда для создания образа (обязательно указать UID (GID)):<br>
+```bash
+docker build . --build-arg UID=3000 --build-arg GID=3000 -f Dockerfile -t bookmarks
+```
+4. Создайте и запустите контейнер:<br>
+```bash
+docker run --rm --name bookmarks --env-file .env bookmarks
+```
+Файл с конфиденциальными данными передается --env-file.<br>
