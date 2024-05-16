@@ -36,6 +36,10 @@ django-admin startapp account
 ```bash
 python manage.py migrate
 ```
+Для использования файла .env установить:<br>
+```bash
+python -m pip install django-environ
+```
 ## Авторизация
 
 Вход в систему:
